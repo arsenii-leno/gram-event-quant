@@ -1,45 +1,57 @@
-# Project Context: gram-event-quant
+# ⚡ gram-event-quant — Event-Driven Quantitative Trading Engine
 
-**Project Name**: gram_quant  
-**Repository**: gram-event-quant  
-**Branch**: feature/event-window-slicer (або main)
+**Status:** 🛠️ Active Development | **Language:** Python 3.11+ | **Architecture:** Async I/O
 
-## Мета проєкту
-Дослідницька платформа для аналізу впливу подій GRAM/TON (крипто / blockchain events) на різні метрики.
-
-## Технологічний стек (фіксований)
-- **Python 3.11+**
-- **DuckDB** — основний OLAP / аналітичний движок
-- **Parquet** — data lake / зберігання сирих даних
-- **Polars** — основна бібліотека для DataFrame операцій (швидше і легше pandas)
-- **SQLModel / Pydantic** — для схем і валідації
-- **uv** — менеджер залежностей
-
-## Архітектурні принципи (дотримуватися строго)
-- Чітке розділення шарів: ingestion → storage → processing → analytics
-- DuckDB як центральне сховище (не SQLite, не PostgreSQL)
-- Максимальне використання SQL через DuckDB для аналітики
-- Polars для трансформацій даних
-- Мінімалізм: без зайвих абстракцій, якщо можна вирішити через DuckDB + Polars
-
-## Поточний стан (на момент контексту)
-- Реалізовано DuckDBStore з підтримкою context manager
-- Реєстрація Parquet файлів як views у DuckDB
-- Базова інфраструктура ingestion
-- Частково написані unit-тести
-
-## Що НЕ робити
-- Не вводити нові фреймворки (SQLAlchemy, Django тощо)
-- Не переходити на pandas, якщо можна Polars
-- Не створювати складні ORM без обговорення
-- Не рефакторити працюючі модулі без явної потреби
-- Не вигадувати файли, яких немає в PROJECT_FILES.txt
-
-## Поточне завдання
-Довести до ладу storage-шар, завершити unit-тести для DuckDBStore, виправити/дописати event window slicer.
+An asynchronous, event-driven trading engine and market data listener designed for low-latency execution and real-time exchange WebSocket processing.
 
 ---
 
-**Інструкція для AI**: 
-Спочатку прочитай PROJECT_TREE.txt, PROJECT_FILES.txt, GEMINI_CONTEXT.md, pyproject.toml та GIT_HISTORY.txt. 
-Тільки після цього давай аналіз поточного стану. Не пропонуй зміни коду, поки я не скажу.
+## 🎯 System Architecture
+
+┌─────────────────────────────────────────────────────────┐
+│        Exchange WebSocket / REST API (Bybit / Binance)   │
+├─────────────────────────────────────────────────────────┤
+│            Async Event Loop (Python asyncio)            │
+│  ├── Market Cache & Real-Time Orderbook Parsing         │
+│  ├── Decimal Math & Precision Volume Calculator         │
+│  └── Slippage Protection & Risk Checks                  │
+├─────────────────────────────────────────────────────────┤
+│            Order Execution & Structured Logging         │
+└─────────────────────────────────────────────────────────┘
+
+
+---
+
+## 🚀 Core Mechanics
+
+- **Non-Blocking I/O:** Built on `asyncio` and `aiohttp`/`websockets` for streaming real-time ticker and depth data.
+- **Precision Math:** Uses Python `decimal` primitives to eliminate floating-point rounding errors during lot size calculations.
+- **Risk Mitigation:** Built-in safeguards for slippage thresholds, max order size validation, and execution logging.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Core:** Python 3.11+, `asyncio`, `websockets`, `aiohttp`
+- **Exchange Integration:** CCXT / Native Exchange REST & WebSocket APIs
+- **Environment Management:** `python-dotenv`
+
+---
+
+## 🚀 Setup & Execution
+
+```bash
+# Setup virtualenv
+git clone [https://github.com/arsenii-leno/gram-event-quant.git](https://github.com/arsenii-leno/gram-event-quant.git)
+cd gram-event-quant
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Configure secrets (.env)
+cp .env.example .env
+
+# Run engine
+python main.py
+⚠️ Disclaimer
+Educational and quantitative research software. Trading digital assets involves financial risk.
